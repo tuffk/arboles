@@ -66,6 +66,10 @@
   <ItemGroup>
     <ClCompile Include="main.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\..\..\Dropbox\TEC\otros semestres\4 semestre\estructura de datos\ARBOLES\ARBOLES\ArbolBinario.h" />
+    <ClInclude Include="..\..\..\..\..\Dropbox\TEC\otros semestres\4 semestre\estructura de datos\ARBOLES\ARBOLES\Nodo.h" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

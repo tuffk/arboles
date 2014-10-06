@@ -19,4 +19,12 @@
       <Filter>Archivos de código fuente</Filter>
     </ClCompile>
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\..\..\Dropbox\TEC\otros semestres\4 semestre\estructura de datos\ARBOLES\ARBOLES\ArbolBinario.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Dropbox\TEC\otros semestres\4 semestre\estructura de datos\ARBOLES\ARBOLES\Nodo.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
+  </ItemGroup>
 </Project>
