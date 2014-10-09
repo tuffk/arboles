@@ -20,10 +20,10 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\..\..\Dropbox\TEC\otros semestres\4 semestre\estructura de datos\ARBOLES\ARBOLES\ArbolBinario.h">
+    <ClInclude Include="Nodo.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\Dropbox\TEC\otros semestres\4 semestre\estructura de datos\ARBOLES\ARBOLES\Nodo.h">
+    <ClInclude Include="AVL.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
   </ItemGroup>

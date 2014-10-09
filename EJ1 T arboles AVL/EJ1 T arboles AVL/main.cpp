@@ -1,15 +1,11 @@
-#include<iostream>
-#include<cstdlib>
-
+#include "AVL.h"
+#include <cstdlib>
 
 using namespace std;
-
 
 int main()
 {
 
-
-	/* HOLA */
 
 	cout << "HOLA MUNDO\n";
 
