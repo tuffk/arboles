@@ -16,7 +16,6 @@ private:
 	Nodo<T> * izq;
 	Nodo<T> * der;
 	Nodo<T> * padre;
-	Nodo<T> * siguiente;
 
 public:
 	Nodo(T i)

@@ -1,4 +1,5 @@
 #include "Nodo.h"
+#include <string>
 
 template<class N>
 class AVL
@@ -33,12 +34,24 @@ public:
 	Nodo<N> * sucesor(Nodo<N> *);
 	Nodo<N> * predecesor(Nodo<N> *);
 
+	void impresionA();
+	void impresionA(Nodo<N> *);
+	void impresionD();
+	void impresionD(Nodo<N> *);
+
 	int profundidad(N);
 	int profundidad(N, Nodo<N> *, int);
 	int profundiddadTotal();
 	int profundiddadTotal(Nodo<N> *);
 
 	int nivel(N);
+	int altura(N info);
+
+	void clear();
+	void clear(Nodo<N> *);
+
+	void imprimir();
+	void imprimir(Nodo<N> *, string, string, string);
 
 	~AVL();
 };
@@ -61,14 +74,20 @@ void AVL<N>::insertar(Nodo<N> * p, Nodo<N> * n)
 	if (p->getInfo() < n->getInfo())
 	{
 		if (p->getDer() == NULL)
+		{
 			p->setDer(n);
+			n->setPadre(p);
+		}
 		else
 			insertar(p->getDer(), n);
 	}
 	else
 	{
 		if (p->getIzq() == NULL)
+		{
 			p->setIzq(n);
+			n->setPadre(p);
+		}
 		else
 			insertar(p->getIzq(), n);
 	}
@@ -89,13 +108,12 @@ Nodo<N> * AVL<N>::borrar(N info)
 		if (nodo->getIzq() == NULL  && nodo->getDer() == NULL)
 		{
 			temp = nodo->getPadre();
-
-			if (temp->getIzq = NULL)
+			if (temp->getIzq() == nodo)
 				temp->setIzq(NULL);
 			else
 				temp->setDer(NULL);
 
-			nodo->setPadre(NULL)
+			nodo->setPadre(NULL);
 		}
 		else
 		{
@@ -103,14 +121,16 @@ Nodo<N> * AVL<N>::borrar(N info)
 			{
 				temp = predecesor(nodo);
 				aux = temp->getInfo();
-				temp1 = borrar(temp);
+				temp1 = borrar(temp->getInfo());
 				nodo->setInfo(aux);
 				return temp1;
 			}
 			else
 			{
+				
 				if (nodo->getIzq() != NULL && nodo->getDer() == NULL)
 				{
+
 					temp = nodo->getPadre();
 					temp1 = nodo->getIzq();
 
@@ -147,7 +167,7 @@ Nodo<N> * AVL<N>::buscar(N info)
 {
 
 	if (encontrado(info, raiz))
-		return buscar();
+		return buscar(info, raiz);
 	else
 	{
 		cout << "NO SE ENCONTRO EL NODO\n";
@@ -207,6 +227,16 @@ Nodo<N> * AVL<N>::buscar(N info, Nodo<N> * n)
 template<class N>
 Nodo<N> * AVL<N>::sucesor(Nodo<N> * n)
 {
+	Nodo<N> * p = n->getDer();
+	while (p->getIzq() != NULL)
+		p = p->getIzq();
+
+	return p;
+}
+
+template<class N>
+Nodo<N> * AVL<N>::predecesor(Nodo<N> * n)
+{
 	Nodo<N> * p = n->getIzq();
 	while (p->getDer() != NULL)
 		p = p->getDer();
@@ -215,13 +245,37 @@ Nodo<N> * AVL<N>::sucesor(Nodo<N> * n)
 }
 
 template<class N>
-Nodo<N> * AVL<N>::predecesor(Nodo<N> * n)
+void AVL<N>::impresionD()
 {
-	Nodo<N> * p = n->getDer();
-	while (p->getIzq() != NULL)
-		p = p->getIzq();
+	impresionA(raiz);
+}
 
-	return p;
+template<class N>
+void AVL<N>::impresionD(Nodo<N> * n)
+{
+	if (n != NULL)
+	{
+		impresionA(n->getDer());
+		cout << *n;
+		impresionA(n->getIzq());
+	}
+}
+
+template<class N>
+void AVL<N>::impresionA()
+{
+	impresionD(raiz);
+}
+
+template<class N>
+void AVL<N>::impresionA(Nodo<N> * n)
+{
+	if (n != NULL)
+	{
+		impresionD(n->getIzq());
+		cout << *n;
+		impresionD(n->getDer());
+	}
 }
 
 template<class N>
@@ -286,4 +340,54 @@ template<class N>
 int AVL<N>::nivel(N i)
 {
 	return profundiddadTotal() - profundidad(i);
+}
+
+template<class N>
+int AVL<N>::altura(N info)
+{
+	if (encontrado(info, raiz))
+		return profundidad(buscar(info));
+	else
+		return 0;
+}
+
+template<class N>
+void AVL<N>::clear()
+{
+	clear(raiz);
+	raiz = NULL;
+}
+
+template<class N>
+void AVL<N>::clear(Nodo<N> * n)
+{
+	if (n != NULL)
+	{
+		clear(n->getIzq());
+		clear(n->getDer());
+		delete n;
+	}
+}
+
+template<class N>
+void AVL<N>::imprimir()
+{
+	imprimir(raiz, "", "", "");
+}
+
+template <class N>
+void AVL<N>::imprimir(Nodo<N> *n, string s, string i, string d)
+{
+	if (n != NULL)
+	{
+		imprimir(n->getDer(), d + "    ", d + "    |", d + "     ");
+		cout << s << "|--" << *n << endl;
+		imprimir(n->getIzq(), i + "    ", i + "     ", i + "    |");
+	}
+}
+
+template<class N>
+AVL<N>::~AVL()
+{
+	clear();
 }
