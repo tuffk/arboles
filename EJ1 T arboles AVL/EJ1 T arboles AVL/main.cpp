@@ -6,7 +6,7 @@ using namespace std;
 
 int main()
 {
-	Nodo<int> * n = new Nodo<int>(50);
+	Nodo<int> * n = new Nodo<int>(500);
 	AVL<int> * arbol = new AVL<int>(n);
 
 	srand((int) time(NULL));
@@ -14,20 +14,14 @@ int main()
 
 	for (int i = 0; i < 14; i++)
 	{
-		Nodo<int> * nodulon = new Nodo<int>(rand() % 100 + 1);
+		Nodo<int> * nodulon = new Nodo<int>(rand() % 1000 + 1);
 		arbol->insertar(nodulon);
+		arbol->imprimir();
+		cout << endl << endl;
 	}
 
 
-	arbol->imprimir();
-
-	cout << endl << endl;
-
-	arbol->borrar(50);
-
-	arbol->imprimir();
-
-	cout << endl;
+	delete arbol;
 
 	system("PAUSE");
 	return 0;

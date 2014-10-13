@@ -41,14 +41,28 @@ public:
 
 	int profundidad(N);
 	int profundidad(N, Nodo<N> *, int);
-	int profundiddadTotal();
-	int profundiddadTotal(Nodo<N> *);
+	int profundidadTotal();
+	int profundidadTotal(Nodo<N> *);
 
 	int nivel(N);
-	int altura(N info);
+	int altura(N);
 
 	void clear();
 	void clear(Nodo<N> *);
+
+	void calcularBalanceo();
+	void calcularBalanceo(Nodo<N> *);
+	bool balanceado();
+	bool balanceado(Nodo<N> *);
+
+	void rotacion();
+	void rotacion(Nodo<N> *);
+
+	void rotacionSimple();
+	void rotacionSimple(Nodo<N> *);
+
+	void rotacionDoble();
+	void rotacionDoble(Nodo<N> *);
 
 	void imprimir();
 	void imprimir(Nodo<N> *, string, string, string);
@@ -92,6 +106,14 @@ void AVL<N>::insertar(Nodo<N> * p, Nodo<N> * n)
 			insertar(p->getIzq(), n);
 	}
 
+	calcularBalanceo();
+
+	if (!balanceado())
+	{
+		imprimir();
+		rotacion();
+		calcularBalanceo();
+	}
 }
 
 template<class N>
@@ -123,6 +145,7 @@ Nodo<N> * AVL<N>::borrar(N info)
 				aux = temp->getInfo();
 				temp1 = borrar(temp->getInfo());
 				nodo->setInfo(aux);
+
 				return temp1;
 			}
 			else
@@ -158,6 +181,16 @@ Nodo<N> * AVL<N>::borrar(N info)
 			}
 		}
 	}
+
+	calcularBalanceo();
+
+	if (!balanceado())
+	{
+		imprimir();
+		rotacion();
+		calcularBalanceo();
+	}
+	
 
 	return nodo;
 }
@@ -281,7 +314,7 @@ void AVL<N>::impresionA(Nodo<N> * n)
 template<class N>
 int AVL<N>::profundidad(N i)
 {
-	return profundidad(i, raiz, 0)
+	return profundidad(i, raiz, 0);
 }
 
 template<class N>
@@ -311,21 +344,21 @@ int AVL<N>::profundidad(N i, Nodo<N> * n, int num)
 }
 
 template<class N>
-int AVL<N>::profundiddadTotal()
+int AVL<N>::profundidadTotal()
 {
 	return profundidadTotal(raiz);
 }
 
 template<class N>
-int AVL<N>::profundiddadTotal(Nodo<N> * n)
+int AVL<N>::profundidadTotal(Nodo<N> * n)
 {
 	int izq = 0;
 	int der = 0;
 
 	if (n != NULL)
 	{
-		izq = profundidad(n->getIzq());
-		der = profundidad(n->getDer());
+		izq = profundidadTotal(n->getIzq());
+		der = profundidadTotal(n->getDer());
 
 		if (izq > der)
 			return 1 + izq;
@@ -339,16 +372,360 @@ int AVL<N>::profundiddadTotal(Nodo<N> * n)
 template<class N>
 int AVL<N>::nivel(N i)
 {
-	return profundiddadTotal() - profundidad(i);
+	return profundidadTotal() - profundidad(i);
 }
 
 template<class N>
 int AVL<N>::altura(N info)
 {
 	if (encontrado(info, raiz))
-		return profundidad(buscar(info));
+		return profundidadTotal(buscar(info));
 	else
 		return 0;
+}
+
+template<class N>
+void AVL<N>::calcularBalanceo()
+{
+	calcularBalanceo(raiz);
+}
+
+template<class N>
+void AVL<N>::calcularBalanceo(Nodo<N> * n)
+{
+	if (n != NULL)
+	{
+		if (n->getDer() != NULL && n->getIzq() != NULL)
+		{
+			n->setFactorBalanceo(altura(n->getDer()->getInfo()) - altura(n->getIzq()->getInfo()));
+			calcularBalanceo(n->getDer());
+			calcularBalanceo(n->getIzq());
+		}
+		else
+		{
+			if (n->getDer() == NULL && n->getIzq() == NULL)
+			{
+				n->setFactorBalanceo(0);
+			}
+			else
+			{
+				if (n->getDer() != NULL && n->getIzq() == NULL)
+				{
+					n->setFactorBalanceo(altura(n->getDer()->getInfo()));
+					calcularBalanceo(n->getDer());
+				}
+				else
+				{
+					n->setFactorBalanceo(0-altura(n->getIzq()->getInfo()));
+					calcularBalanceo(n->getIzq());
+				}
+			}
+		}
+	}
+}
+
+template<class N>
+bool AVL<N>::balanceado()
+{
+	return balanceado(raiz);
+}
+
+template<class N>
+bool AVL<N>::balanceado(Nodo<N> * n)
+{
+	if (n != NULL)
+	{
+		if (1 >= n->getFactorBalanceo() && n->getFactorBalanceo() >= -1)
+			return (balanceado(n->getDer()) && balanceado(n->getIzq()) && true);
+		else
+			return false;
+	}
+
+	return true;
+}
+
+template<class N>
+void AVL<N>::rotacion()
+{
+	rotacion(raiz);
+}
+
+template<class N>
+void AVL<N>::rotacion(Nodo<N> * n)
+{
+
+	if (n != NULL)
+	{
+		if (n->getFactorBalanceo() >= 2 || n->getFactorBalanceo() <= -2)
+		{
+			Nodo<N> * temp = n;
+
+			while (temp->getFactorBalanceo() >= 2 || temp->getFactorBalanceo() <= -2)
+			{
+				if (temp->getFactorBalanceo() >= 2)
+					temp = temp->getDer();
+				else if (temp->getFactorBalanceo() <= -2)
+					temp = temp->getIzq();
+			}
+
+			
+			Nodo<N> * pivote = temp->getPadre();
+
+			if (pivote->getFactorBalanceo() > 0)
+			{
+				if (temp->getFactorBalanceo() > 0)
+				{
+					cout << "Rotacion simple a la izquierda\n";
+					rotacionSimple(temp);
+				}
+				else
+				{
+					cout << "Rotacion doble a la izquierda\n";
+					rotacionDoble(temp);
+				}
+			}
+			else
+			{
+				if (temp->getFactorBalanceo() < 0)
+				{
+					cout << "Rotacion simple a la derecha\n";
+					rotacionSimple(temp);
+				}
+				else
+				{
+					cout << "Rotacion doble a la derecha\n";
+					rotacionDoble(temp);
+				}
+			}
+
+		}
+		else
+		{
+			rotacion(n->getIzq());
+			rotacion(n->getDer());
+		}
+	}
+
+}
+
+template<class N>
+void AVL<N>::rotacionSimple()
+{
+	rotacionSimple(raiz);
+}
+
+template<class N>
+void AVL<N>::rotacionSimple(Nodo<N> * n)
+{
+
+	if (n != NULL)
+	{	
+		Nodo<N> * temp = n;
+		Nodo<N> * pivote = temp->getPadre();
+		Nodo<N> * aux;
+
+		if (pivote->getPadre() != NULL)
+			aux = pivote->getPadre();
+		else
+			aux = NULL;
+
+		Nodo<N> * aux1;
+
+		if (pivote->getFactorBalanceo() > 0)
+		{
+			if (aux != NULL)
+			{
+				if (aux->getDer() == pivote)
+				{
+					aux->setDer(temp);
+					temp->setPadre(aux);
+				}
+				else
+				{
+					aux->setIzq(temp);
+					temp->setPadre(aux);
+				}				
+			}
+			else
+			{
+				temp->setPadre(NULL);
+				raiz = temp;
+			}
+
+			if (temp->getIzq() != NULL)
+			{
+				aux1 = temp->getIzq();
+				pivote->setDer(aux1);
+				aux1->setPadre(pivote);
+			}
+			else
+				pivote->setDer(NULL);
+
+			pivote->setPadre(temp);
+			temp->setIzq(pivote);
+				
+		}
+		else
+		{
+			if (aux != NULL)
+			{
+				if (aux->getDer() == pivote)
+				{
+					aux->setDer(temp);
+					temp->setPadre(aux);
+				}
+				else
+				{
+					aux->setIzq(temp);
+					temp->setPadre(aux);
+				}
+			}
+			else
+			{
+				temp->setPadre(NULL);
+				raiz = temp;
+			}
+			
+			if (temp->getDer() != NULL)
+			{
+				aux1 = temp->getDer();
+				pivote->setIzq(aux1);
+				aux1->setPadre(pivote);
+			}
+			else
+				pivote->setIzq(NULL);
+
+			temp->setDer(pivote);
+			pivote->setPadre(temp);
+		}
+	}
+
+}
+
+template<class N>
+void AVL<N>::rotacionDoble()
+{
+	rotacionDoble(raiz);
+}
+
+template<class N>
+void AVL<N>::rotacionDoble(Nodo<N> * n)
+{
+
+	if (n != NULL)
+	{
+		
+			Nodo<N> * temp = n;
+			Nodo<N> * pivote = temp->getPadre();
+			Nodo<N> * aux;
+
+			if (pivote->getPadre() != NULL)
+				aux = pivote->getPadre();
+			else
+				aux = NULL;
+
+			Nodo<N> * aux1;
+			Nodo<N> * aux2;
+			Nodo<N> * aux3;
+
+			if (pivote->getFactorBalanceo() > 0)
+			{
+
+				aux1 = temp->getIzq();
+
+				if (aux != NULL)
+				{
+					if (aux->getDer() == pivote)
+					{
+						aux->setDer(aux1);
+						aux1->setPadre(aux);
+					}
+					else
+					{
+						aux->setIzq(aux1);
+						aux1->setPadre(aux);
+					}
+				}
+				else
+				{
+					aux1->setPadre(NULL);
+					raiz = aux1;
+				}
+
+				if (aux1->getIzq() != NULL)
+				{
+					aux2 = aux1->getIzq();
+					pivote->setDer(aux2);
+					aux2->setPadre(pivote);
+				}
+				else
+					pivote->setDer(NULL);
+
+				if (aux1->getDer() != NULL)
+				{
+					aux3 = aux1->getDer();
+					temp->setIzq(aux3);
+					aux3->setPadre(temp);
+				}
+				else
+					temp->setIzq(NULL);
+
+				aux1->setIzq(pivote);
+				pivote->setPadre(aux1);
+				aux1->setDer(temp);
+				temp->setPadre(aux1);
+
+			}
+			else
+			{
+
+				aux1 = temp->getDer();
+
+				if (aux != NULL)
+				{
+					if (aux->getDer() == pivote)
+					{
+						aux->setDer(aux1);
+						aux1->setPadre(aux);
+					}
+					else
+					{
+						aux->setIzq(aux1);
+						aux1->setPadre(aux);
+					}
+				}
+				else
+				{
+					aux1->setPadre(NULL);
+					raiz = aux1;
+				}
+
+				if (aux1->getIzq() != NULL)
+				{
+					aux2 = aux1->getIzq();
+					temp->setDer(aux2);
+					aux2->setPadre(temp);
+				}
+				else
+					temp->setDer(NULL);
+
+				if (aux1->getDer() != NULL)
+				{
+					aux3 = aux1->getDer();
+					pivote->setIzq(aux3);
+					aux3->setPadre(pivote);
+				}
+				else
+					pivote->setIzq(NULL);
+
+				aux1->setIzq(temp);
+				temp->setPadre(aux1);
+				aux1->setDer(pivote);
+				pivote->setPadre(aux1);
+			}
+
+	}
+
 }
 
 template<class N>
