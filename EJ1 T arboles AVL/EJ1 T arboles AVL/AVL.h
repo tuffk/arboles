@@ -212,48 +212,40 @@ template<class N>
 bool AVL<N>::encontrado(N info, Nodo<N> * n)
 {
 
-	bool indica = false;
 
-	if (n != NULL)
+	Nodo<N> * temp = n;
+
+	while (temp != NULL)
 	{
-		if (n->getInfo() == info)
+		if (info == temp->getInfo())
 			return true;
+		else if (info > temp->getInfo())
+			temp = temp->getDer();
 		else
-		{
-			indica = encontrado(info, n->getIzq());
-
-			if (!indica)
-				indica = encontrado(info, n->getDer());
-
-			return indica;
-		}
+			temp = temp->getIzq();
 	}
 
-	return indica;
+	return false;
+
 }
 
 template<class N>
 Nodo<N> * AVL<N>::buscar(N info, Nodo<N> * n)
 {
 
-	Nodo<N> * temp = NULL;
+	Nodo<N> * temp = n;
 
-	if (n != NULL)
+	while (temp != NULL)
 	{
-		if (n->getInfo() == info)
-			return n;
-		else
-		{
-			temp = buscar(info, n->getIzq());
-
-			if (temp == NULL)
-				temp = buscar(info, n->getDer());
-			
+		if (info == temp->getInfo())
 			return temp;
-		}
+		else if (info > temp->getInfo())
+			temp = temp->getDer();
+		else
+			temp = temp->getIzq();
 	}
 
-	return temp;
+	return NULL;
 
 }
 
@@ -278,13 +270,13 @@ Nodo<N> * AVL<N>::predecesor(Nodo<N> * n)
 }
 
 template<class N>
-void AVL<N>::impresionD()
+void AVL<N>::impresionA()
 {
 	impresionA(raiz);
 }
 
 template<class N>
-void AVL<N>::impresionD(Nodo<N> * n)
+void AVL<N>::impresionA(Nodo<N> * n)
 {
 	if (n != NULL)
 	{
@@ -295,13 +287,13 @@ void AVL<N>::impresionD(Nodo<N> * n)
 }
 
 template<class N>
-void AVL<N>::impresionA()
+void AVL<N>::impresionD()
 {
 	impresionD(raiz);
 }
 
 template<class N>
-void AVL<N>::impresionA(Nodo<N> * n)
+void AVL<N>::impresionD(Nodo<N> * n)
 {
 	if (n != NULL)
 	{
