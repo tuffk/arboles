@@ -77,15 +77,27 @@ int main(int argc, const char * argv[])
 	*/
 
 	srand((int)time(NULL));
+	AVL<int>* ab = new AVL<int>();
+
 
 	clock_t t;
 	t = clock();
 
 
 
+	for (int i = 0; i < 1000; i++)
+	{
+		cout << i << " ";
+		Nodo<int>* nod = new Nodo<int>(i);
+		ab->insertar(nod);
+	}
+
+
+
+
 	t = clock() - t;
 	//printf("It took me %d clicks (%f seconds).\n", t, ((float)t) / CLOCKS_PER_SEC);
-	cout << "tardo " << t << "clicks, y " << (((float)t) / CLOCKS_PER_SEC) << "segundos" << endl;
+	cout << "tardo " << t << " clicks, y " << (((float)t) / CLOCKS_PER_SEC) << " segundos" << endl;
 
 	system("PAUSE");
 

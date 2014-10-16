@@ -68,6 +68,9 @@ public:
 	void imprimir();
 	void imprimir(Nodo<N> *, string, string, string);
 
+	void rotIzq(Nodo<N>* pivote);
+	void rotDer(Nodo<N>* pivote);
+
 	~AVL();
 };
 
@@ -76,9 +79,14 @@ void AVL<N>::insertar(Nodo<N> * n)
 {
 
 	if (raiz == NULL)
+	{
 		raiz = n;
+		raiz->setColor(0);
+	}
 	else
+	{
 		insertar(raiz, n);
+	}
 
 }
 
@@ -111,7 +119,7 @@ void AVL<N>::insertar(Nodo<N> * p, Nodo<N> * n)
 
 	if (!balanceado())
 	{
-		imprimir();
+		//imprimir();
 		rotacion();
 		calcularBalanceo();
 	}
@@ -476,12 +484,12 @@ void AVL<N>::rotacion(Nodo<N> * n)
 			{
 				if (temp->getFactorBalanceo() > 0)
 				{
-					cout << "Rotacion simple a la izquierda\n";
+					//cout << "Rotacion simple a la izquierda\n";
 					rotacionSimple(temp);
 				}
 				else
 				{
-					cout << "Rotacion doble a la izquierda\n";
+					//cout << "Rotacion doble a la izquierda\n";
 					rotacionDoble(temp);
 				}
 			}
@@ -489,12 +497,12 @@ void AVL<N>::rotacion(Nodo<N> * n)
 			{
 				if (temp->getFactorBalanceo() < 0)
 				{
-					cout << "Rotacion simple a la derecha\n";
+					//cout << "Rotacion simple a la derecha\n";
 					rotacionSimple(temp);
 				}
 				else
 				{
-					cout << "Rotacion doble a la derecha\n";
+					//cout << "Rotacion doble a la derecha\n";
 					rotacionDoble(temp);
 				}
 			}
@@ -768,4 +776,31 @@ template<class N>
 AVL<N>::~AVL()
 {
 	clear();
+}
+
+
+template<class N>
+void AVL<N>::rotIzq(Nodo<N>* pivote)
+{
+	Nodo<T>* temp = raiz;
+	temp = pivote;
+	pivote->getPadre()->setDerecho(pivote->getDerecho());
+	pivote->setPadre(pivote->getDerecho());
+	temp = pivote->getPadre()->getIzquierdo();
+	pivote->getDerecho()->setIzquierdo(pivote);
+	pivote->setDerecho(temp);
+	temp->setPadre(pivote);
+}
+
+template<class N>
+void AVL<N>::rotDer(Nodo<N>* pivote)
+{
+	Nodo<T>* temp = raiz;
+	temp = pivote;
+	pivote->getPadre()->setIzquierdo(pivote->getIzquierdo());
+	pivote->setPadre(pivote->getIzquierdo());
+	temp = pivote->getPadre()->getDerecho();
+	pivote->getIzquierdo()->setDerecho(pivote);
+	pivote->setIzquierdo(temp);
+	temp->setPadre(pivote);
 }
